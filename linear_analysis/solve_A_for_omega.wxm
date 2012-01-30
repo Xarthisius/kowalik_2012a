@@ -1,0 +1,42 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 11.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+/*%Omega: 1.0;
+%tau: 0.1;
+c[s]: 1.0;
+%rho[g]: 1.0;
+%epsilon: 3.0;
+etavk: 0.05;
+w[x]: -2*%tau*etavk/( (1+%epsilon)**2+%tau**2);
+u[x]: -%epsilon*w[x];
+w[y]: (1+%epsilon)/(2*%tau)*w[x];
+u[y]: (1+%epsilon+%tau**2)/(2*%tau)*w[x];
+%rho[p]: %epsilon*%rho[g];
+k[x]: 30 / etavk;
+k[z]: 30 / etavk;*/
+A: matrix([-%i*(%omega-k[x]*w[x]), %i*k[x]*%rho[p], 0, %i*k[z]*%rho[p], 0, 0, 0, 0],
+          [0, -%i*(%omega-k[x]*w[x]) + 1/%tau, -2*%Omega, 0, 0, -1/%tau, 0 ,0 ],
+          [0, 0.5*%Omega, -%i*(%omega-k[x]*w[x]) + 1/%tau, 0 ,0, 0, -1/%tau, 0],
+          [0, 0, 0, -%i*(%omega-k[x]*w[x]) + 1/%tau, 0 ,0, 0,   -1/%tau],
+          [0, 0, 0, 0, -%i*(%omega-k[x]*u[x]), %i*k[x]*%rho[g], 0, %i*k[z]*%rho[g]],
+          [(u[x]-w[x])/(%tau*%rho[g]), -%epsilon/%tau, 0, 0, c[s]^2/%rho[g]*%i*k[x], -%i*(%omega-k[x]*u[x])+%epsilon/%tau, -2*%Omega, 0],
+          [(u[y]-w[y])/(%tau*%rho[g]), 0, -%epsilon/%tau, 0, 0, 0.5*%Omega, -%i*(%omega-k[x]*u[x])+%epsilon/%tau, 0],
+          [0, 0, 0, -%epsilon/%tau, c[s]^2/%rho[g]*%i*k[z], 0, 0, -%i*(%omega-k[x]*u[x])+%epsilon/%tau]);
+o_eq: determinant(A);
+ratcoeff(expand(o_eq), %omega, 0);
+/*
+coeff(expand(o_eq), o, 0);
+coeff(expand(o_eq), o, 1);
+coeff(expand(o_eq), o, 2);
+coeff(expand(o_eq), o, 3);
+coeff(expand(o_eq), o, 4);
+coeff(expand(o_eq), o, 5);
+coeff(expand(o_eq), o, 6);
+coeff(expand(o_eq), o, 7);
+coeff(expand(o_eq), o, 8);
+*/;
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

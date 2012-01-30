@@ -1,0 +1,6 @@
+solve_A_for_omega.wxm: maxima script for getting formulas for coefficients in
+   dispersion relation
+streaming.py: contains class that solves disperion relation using coefficients
+   provided by 'solve_A_for_omega.wxm' also returns the eigenvalues
+patch.py: MPI script that shows growth rate of streaming instability as 
+   function of K_x and K_z
