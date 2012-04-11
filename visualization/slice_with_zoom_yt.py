@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import h5py as h5
 import loadct as ct
 from matplotlib.patches import Rectangle, ConnectionPatch
+from yt.mods import *
+import numpy as np
 
 matplotlib.rc("axes", linewidth=1.5, labelsize="large")
 matplotlib.rc("lines", markeredgewidth=1.5)
@@ -30,6 +32,8 @@ def make_ticklabels_invisible(fig):
         for tl in ax.get_xticklabels() + ax.get_yticklabels():
             tl.set_visible(False)
 
+c1 = [4.25,np.pi/2,0.0]
+c2 = [8.25,np.pi/2,0.0]
 patch1 = [4.0,4.5,-0.25,0.25]
 patch2 = [8.0,8.5,-0.25,0.25]
 vmin = 0.0
@@ -38,14 +42,21 @@ vmax = 0.5
 
 for fn in sys.argv[1:]:
 
-   foo = read_data_hdf5(fn, 'dend')
+   pf = load(fn)
+   field = "dend"
 
-   ext = [ foo['xmin'][0], foo['xmax'][0], foo['zmin'][0], foo['zmax'][0] ]
+   le = pf.domain_left_edge
+   re = pf.domain_right_edge
+
+   s = pf.h.slice(1, np.pi/2.0, fields=["dend"])
+
+   ext = [ le[0], re[0], le[2], re[2] ]
    fig = plt.figure(0, figsize=(14,10))
    fig.clf()
    ax1 = plt.subplot2grid((4,8), (0,0), colspan=8)
-   ax1.axis([2.5, 10.0, foo['zmin'], foo['zmax']])
-   ax1.imshow(foo['dend'], extent=ext, vmin=vmin, vmax=vmax, cmap=my_cmap)
+   ax1.axis([2.5, 10.0, le[2], re[2]])
+   img = s.to_frb(7.5, (int(7.5*512),512), center=[6.25,np.pi/2.,0.0], height=1.0)
+   ax1.imshow(img['dend'], extent=[2.5, 10.0, le[2], re[2]], cmap=my_cmap)
    for f in [ patch1, patch2 ]:
       xy = (f[0], f[2])
       rect = Rectangle(xy, f[1]-f[0] , f[3]-f[2], facecolor="#aaaaaa", alpha=0.85)
@@ -55,7 +66,8 @@ for fn in sys.argv[1:]:
 
    ax2 = plt.subplot2grid((4,8), (1,0), colspan=4, rowspan=3)
    ax2.axis(patch1)
-   ax2.imshow(foo['dend'], extent=ext, vmin=vmin, vmax=vmax, cmap=my_cmap)
+   img = s.to_frb(0.5, (512,512),center=c1)
+   ax2.imshow(img['dend'], cmap=my_cmap,  extent=patch1)
    ax2.set_aspect(1.0)
    ax2.set_xlabel("R [AU]")
    ax2.set_ylabel("z [AU]")
@@ -63,7 +75,8 @@ for fn in sys.argv[1:]:
    ax3 = plt.subplot2grid((4,8), (1,4), colspan=4, rowspan=3)
    ax3.axis(patch2)
    ax3.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(4))
-   ax3.imshow(foo['dend'], extent=ext, vmin=vmin, vmax=vmax, cmap=my_cmap)
+   img = s.to_frb(0.5, (512,512),center=c2)
+   ax3.imshow(img['dend'], extent=patch2, cmap=my_cmap)
    ax3.set_aspect(1.0)
    ax3.set_xlabel("R [AU]")
    ax3.tick_params(axis="y",labelright=True, labelleft=False)
@@ -84,7 +97,7 @@ for fn in sys.argv[1:]:
               arrowstyle="<-", shrinkA=3.0, shrinkB=3.0)
       ax3.add_artist(arrow)
 
-   fig.suptitle("Time = %4.0i [yr]" % foo['time'][0])
+   fig.suptitle("Time = %4.0i [yr]" % pf.current_time)
    plt.draw()
    plt.savefig(fn.replace('.h5','_zoom.png'))
    print("%s written"%fn.replace('.h5','_zoom.png'))
