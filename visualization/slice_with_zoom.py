@@ -23,6 +23,8 @@ def read_data_hdf5(name,dset):
    h5f.close()
    return temp
 
+colormap = ct.p05
+my_cmap = matplotlib.colors.LinearSegmentedColormap('my_colormap',colormap)
 
 def make_ticklabels_invisible(fig):
     for i, ax in enumerate(fig.axes):

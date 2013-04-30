@@ -23,6 +23,7 @@ def read_data_hdf5(name,dset):
    h5f.close()
    return temp
 
+
 def make_ticklabels_invisible(fig):
     for i, ax in enumerate(fig.axes):
         ax.text(0.5, 0.5, "ax%d" % (i+1), va="center", ha="center")
@@ -80,10 +81,6 @@ for fn in parallel_objects(args.files, njobs=6):
    ax2 = plt.subplot2grid((4,8), (1,0), colspan=4, rowspan=3)
    ax2.axis(patch1)
    img = s.to_frb(0.5, (512,512),center=c1)
-#   blah = np.zeros((512,512,2),dtype=np.float32)
-#   blah[...,0] += img['vlxd']
-#   blah[...,1] += img['vlzd']
-#   np.save('test1.npy', blah)
    ax2.imshow(img['dend'], cmap=my_cmap, extent=patch1,
          vmin=vmin, vmax=vmax, interpolation="nearest")
    ax2.set_aspect(1.0)
@@ -94,10 +91,6 @@ for fn in parallel_objects(args.files, njobs=6):
    ax3.axis(patch2)
    ax3.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(4))
    img = s.to_frb(0.5, (512,512),center=c2)
-#   blah = np.zeros((512,512,2),dtype=np.float32)
-#   blah[...,0] += img['vlxd']
-#   blah[...,1] += img['vlzd']
-#   np.save('test2.npy', blah)
    ax3.imshow(img['dend'], extent=patch2, cmap=my_cmap,
          vmin=vmin, vmax=vmax, interpolation="nearest")
    ax3.set_aspect(1.0)
